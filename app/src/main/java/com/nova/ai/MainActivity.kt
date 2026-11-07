@@ -115,6 +115,10 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             setOnClickListener { chooseTextFile() }
         }, matchWidth())
         root.addView(Button(this).apply {
+            text = "سجل المحادثات وإدارته"
+            setOnClickListener { showChatHistory() }
+        }, matchWidth())
+        root.addView(Button(this).apply {
             text = "إعدادات الاتصال والصوت والشاشة"
             setOnClickListener { showSettingsChoices() }
         }, matchWidth())
@@ -158,9 +162,12 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             status.text = "رسالتك جاهزة، لكن خادم الذكاء الاصطناعي مش مربوط. يلزم ضبط NOVA_API_BASE_URL."
             return
         }
-        status.text = "ببعت رسالتك للخادم..."
-        AiGateway.send(baseUrl, message) { reply ->
+        ChatHistoryStore.add(this, "user", message)
+        val conversation = ChatHistoryStore.transcript(this)
+        status.text = "ببعت رسالتك وسياق المحادثة للخادم..."
+        AiGateway.send(baseUrl, conversation) { reply ->
             runOnUiThread {
+                if (reply != null) ChatHistoryStore.add(this, "assistant", reply)
                 status.text = reply ?: "تعذر الاتصال بالخادم. راجع عنوان الخدمة والاتصال."
             }
         }
@@ -179,6 +186,25 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             .setNegativeButton("إلغاء", null)
             .setPositiveButton("موافق وإرسال") { _, _ ->
                 sendMessage("حلل معلومات جهازي دي، واشرح حالته واقترح خطوات مناسبة من غير ما تغيّر أي إعداد:\n$snapshot")
+            }
+            .show()
+    }
+
+    private fun showChatHistory() {
+        AlertDialog.Builder(this)
+            .setTitle("سجل المحادثات المحفوظ على الجهاز")
+            .setMessage(ChatHistoryStore.preview(this).take(10_000))
+            .setNegativeButton("إغلاق", null)
+            .setNeutralButton("مسح السجل") { _, _ ->
+                AlertDialog.Builder(this)
+                    .setTitle("مسح سجل المحادثات؟")
+                    .setMessage("هيتم حذف السجل المحلي من التطبيق. مش هيتم حذف أي بيانات من خادم خارجي.")
+                    .setNegativeButton("إلغاء", null)
+                    .setPositiveButton("مسح") { _, _ ->
+                        ChatHistoryStore.clear(this)
+                        status.text = "تم مسح سجل المحادثات المحلي."
+                    }
+                    .show()
             }
             .show()
     }
