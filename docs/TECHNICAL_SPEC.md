@@ -15,6 +15,7 @@ Language: Egyptian Arabic (ar-EG)
 - User reviews the device snapshot and confirms before it is sent to the AI gateway.
 - Launcher-app discovery and app launching using Android package visibility for MAIN/LAUNCHER activities. This is not a complete installed-package inventory.
 - User-selected text, Markdown, JSON, and XML file import through Android Storage Access Framework. Only selected files are read, limited to 64 KiB, previewed, and sent only after confirmation.
+- Local conversation history for the latest 20 turns, with a review screen and a user-triggered clear action. Recent turns are sent as context only when the user sends a new message.
 - Confirmed shortcuts to Android Wi-Fi, Bluetooth, sound, display, location, and general Settings pages. NOVA opens the relevant system page; the user performs the change.
 - HTTPS-only Android client for POST /v1/chat with a { "message": "..." } request and { "reply": "..." } response.
 - Node.js backend implementation using OpenAI Responses API with server-side credentials, store=false, request validation, basic rate limiting, and timeout.
@@ -37,7 +38,7 @@ See backend/README.md. Configure OPENAI_API_KEY and OPENAI_MODEL only in the bac
 | App management | Launchable apps only; no uninstall, install, force-stop, or hidden package control |
 | File understanding | User-selected text/Markdown/JSON/XML up to 64 KiB; images/PDFs not yet implemented |
 | Device settings | Confirmed navigation to Android settings screens; user performs changes |
-| Chat history | Not implemented |
+| Chat history | Local private history, latest 20 turns, clear control |
 | Backend authentication | Optional staging bearer token; production per-user authentication remains required |
 
 ## Build baseline
