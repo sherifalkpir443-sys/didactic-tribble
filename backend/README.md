@@ -12,7 +12,7 @@ Copy `.env.example` to `.env` in your deployment environment (do not commit it),
 - `OPENAI_API_KEY`: secret stored only in the server environment.
 - `OPENAI_MODEL`: model available to your API project (defaults to `gpt-6-astra`).
 - `PORT`: server port (defaults to 8080).
-- `NOVA_GATEWAY_TOKEN`: optional bearer token for controlled staging. If enabled, clients must send it. Do not embed a shared production token in a publicly distributed APK; use proper per-user authentication at a trusted gateway instead.
+- `NOVA_GATEWAY_TOKEN`: optional bearer token for controlled staging. If enabled, clients must send it. Do not embed a shared production token in a publicly distributed APK; use proper per-user authentication at a trusted gateway instead. For a controlled staging build only, the Android client can be configured with `-PNOVA_GATEWAY_TOKEN=...`; this value is embedded in the APK and is therefore extractable.
 
 Run locally:
 
