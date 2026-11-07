@@ -24,7 +24,7 @@ An ordinary third-party Android app cannot read every item on a phone. Android's
 | SMS/call logs | Not implemented | Do not add as a general data-reading feature; platform restrictions apply |
 | Device control | Limited to opening system pages and launching apps | Add individual actions through supported Android APIs and confirmation |
 | Chat history | Implemented as local app-private history with clear control | Add encryption-at-rest and export controls |
-| Web search | Not implemented | Add Responses API web search tool and citations |
+| Web search | Enabled through Responses API web_search tool | Render returned source citations as clickable links in a richer chat UI |
 | Realistic animated avatar | Prototype only | Licensed rigged model, animation, and lip-sync testing |
 
 ## Release gates
