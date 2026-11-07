@@ -1,7 +1,7 @@
 import http from "node:http";
 import { pathToFileURL } from "node:url";
 
-const MAX_BODY_BYTES = 16 * 1024;
+const MAX_BODY_BYTES = 64 * 1024;
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 20;
 
