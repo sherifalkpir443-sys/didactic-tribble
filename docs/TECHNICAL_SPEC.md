@@ -1,52 +1,51 @@
 # NOVA AI — Technical Specification
 
-Status: Initial baseline, version 0.1.0  
+Status: implementation baseline 0.2.0  
 Application ID: com.nova.ai  
 Platform: Android 8.0+ (API 26+)  
-Primary language: Egyptian Arabic (ar-EG)
+Language: Egyptian Arabic (ar-EG)
 
-## Product objective
-Build an Arabic-first personal Android assistant with conversational text, voice input/output, selectable male/female presentation profiles, and a realistic 3D digital avatar. Every device action must originate from a clear user command and receive the relevant Android permission or system confirmation.
+## Implemented
+- Native Kotlin Android application with an Arabic-first interface.
+- Text input and on-demand speech recognition using Android SpeechRecognizer.
+- Arabic text-to-speech using Android TextToSpeech.
+- Microphone permission requested only after a microphone tap.
+- Male/female presentation selector with a simple 2D face preview. This is not the planned realistic 3D avatar.
+- Explicitly confirmed action to open Android Settings. No silent device setting changes are performed.
+- Optional HTTPS AI gateway client. It sends POST /v1/chat with {"message":"..."} and expects {"reply":"..."}.
 
-## Implemented in this baseline
-- Native Kotlin Android Activity and Arabic-first starter UI.
-- Text entry with an explicitly labeled local placeholder response.
-- Speech recognition through Android SpeechRecognizer, started only after the user taps the microphone and grants RECORD_AUDIO.
-- Arabic (Egypt) text-to-speech through Android TextToSpeech.
-- Text interaction remains available if microphone permission is denied.
+## AI gateway configuration
+Set Gradle project property NOVA_API_BASE_URL to the HTTPS base URL of a deployed backend. Example local Gradle invocation:
 
-## Planned architecture
-| Layer | Responsibility | Status |
-|---|---|---|
-| Presentation | Chat UI, avatar surface, persona selector, consent UI | Basic text UI only |
-| Conversation | Message model, session state, history | Planned |
-| Speech | Speech-to-text and text-to-speech adapters | Device APIs wired |
-| AI gateway | Authenticated model-provider requests through backend | Not implemented |
-| Action broker | Validates intent, permission and confirmation | Planned; no actions enabled |
-| Device adapters | Narrow Android APIs for approved actions | Not implemented |
-| Storage | Preferences and optional encrypted history | Planned |
+    gradle -PNOVA_API_BASE_URL=https://your-domain.example assembleDebug
+
+The backend must implement POST /v1/chat and return JSON with a non-empty reply field. No provider credentials are stored in the APK or repository. Without a deployed compatible backend URL, the app clearly reports that AI is not connected.
+
+## Architecture
+| Layer | Current status |
+|---|---|
+| Android presentation | Native starter UI |
+| Speech input/output | Android APIs connected |
+| AI gateway | HTTPS client connected to a documented contract; backend not deployed |
+| Persona selector | Basic male/female UI state and 2D preview |
+| Realistic 3D avatar | Not implemented; requires selected 3D runtime and model assets |
+| Device actions | Explicit confirmation before opening Android Settings; other actions not enabled |
+| Storage/history | Not implemented |
 
 ## Build baseline
-- Android Gradle Plugin 8.7.3; Gradle 8.9; Kotlin 2.0.21
-- JDK 17; compileSdk 35; targetSdk 35; minSdk 26
-- Application ID: com.nova.ai
+- Android Gradle Plugin 8.7.3
+- Kotlin 2.0.21
+- Gradle 8.9
+- JDK 17
+- compileSdk/targetSdk 35; minSdk 26
 
-## Functional requirements
-1. Text chat must work without device permissions.
-2. Voice recognition starts only after an explicit microphone action.
-3. Permission denial or revocation must not crash the app.
-4. Speech output is user-triggered.
-5. Voice/avatar profiles are presentation choices, not privilege levels.
-6. Cloud AI must use a backend gateway; secrets must never be embedded in the APK or Git.
-7. Device actions must be allow-listed, explained, permission-checked and confirmed when sensitive.
+## Security requirements
+- HTTPS only for the AI gateway.
+- No provider API key or private credential in the Android app.
+- No hidden microphone use or background recording.
+- No device action without a direct user action and any required Android permission/system confirmation.
+- Fail closed when gateway URL is absent or network calls fail.
+- No bypassing Android sandbox or system permission controls.
 
-## Non-functional requirements
-- No hidden recording or background microphone activation.
-- No silent message sending or device changes.
-- TLS for network traffic.
-- Data minimization and a clear retention/deletion policy before cloud history is enabled.
-- Graceful offline and permission-denied behavior.
-- Minimal, reviewed dependencies.
-
-## Version 0.1.0 exclusions
-No remote AI provider, 3D avatar engine, phone automation, contacts/SMS access, call control, location access, accessibility service, overlay, or background action service is implemented.
+## Remaining release requirements
+A deployed backend and provider configuration, a real 3D model/runtime, full action-by-action permission/confirmation design, automated tests, successful CI build, and device installation testing remain outstanding.
