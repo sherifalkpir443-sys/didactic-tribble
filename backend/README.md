@@ -30,4 +30,4 @@ The service listens on port 8080. Deploy behind a TLS-terminating reverse proxy 
 - Responses API requests set `store: false`.
 - The service does not persist conversations or log message content.
 
-Before production: add durable per-user authentication, distributed rate limiting, abuse monitoring without content logging, deployment health monitoring, secret rotation, and privacy/legal review. The in-memory limiter is per process and is not a substitute for edge protection.
+Before production: add durable per-user authentication, distributed rate limiting, abuse monitoring without content logging, deployment health monitoring, secret rotation, and privacy/legal review. Set `TRUST_PROXY=true` only when the service is behind a trusted reverse proxy that overwrites `X-Forwarded-For`; otherwise the gateway uses the direct socket peer. The in-memory limiter is per process and is not a substitute for edge protection.
