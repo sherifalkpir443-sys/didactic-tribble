@@ -42,7 +42,7 @@ export function createServer({
       return send(res, 200, {
         status: "ok",
         aiConfigured: Boolean(env.OPENAI_API_KEY),
-        modelConfigured: Boolean(env.OPENAI_MODEL || "gpt-6-astra")
+        model: env.OPENAI_MODEL || "gpt-6-astra"
       });
     }
 
@@ -55,9 +55,15 @@ export function createServer({
       return send(res, 401, { error: "unauthorized" });
     }
 
-    // Use the socket peer by default; do not trust caller-controlled X-Forwarded-For.\n    const clientKey = req.socket.remoteAddress || "unknown";
+    // Use the socket peer by default; do not trust caller-controlled X-Forwarded-For.
+    const clientKey = req.socket.remoteAddress || "unknown";
     const now = clock();
-    if (buckets.size > 5_000) {\n      for (const [key, value] of buckets) {\n        if (now - value.start >= WINDOW_MS) buckets.delete(key);\n      }\n    }\n    const bucket = buckets.get(clientKey);
+    if (buckets.size > 5_000) {
+      for (const [key, value] of buckets) {
+        if (now - value.start >= WINDOW_MS) buckets.delete(key);
+      }
+    }
+    const bucket = buckets.get(clientKey);
     if (!bucket || now - bucket.start >= WINDOW_MS) {
       buckets.set(clientKey, { start: now, count: 1 });
     } else if (bucket.count >= MAX_REQUESTS_PER_WINDOW) {
@@ -102,7 +108,6 @@ export function createServer({
       });
 
       if (!upstream.ok) {
-        // Do not expose provider response bodies, request headers, or credentials to the app.
         return send(res, 502, { error: "ai_provider_error" });
       }
       const data = await upstream.json();
