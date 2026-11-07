@@ -1,27 +1,24 @@
 # NOVA AI — Security and Permissions Model
 
-## Baseline
-The app follows least privilege. Version 0.1.0 declares only RECORD_AUDIO because voice input is implemented. It does not request contacts, SMS, call logs, location, camera, accessibility, overlay, or broad file access.
+## Current permissions
+- RECORD_AUDIO: declared and requested only after the user taps the voice button.
+- INTERNET: used only for the optional HTTPS AI gateway.
+- No contacts, SMS, call logs, location, camera, accessibility service, overlay, or broad file permissions are requested.
 
-## Microphone consent flow
-1. User taps the microphone button.
-2. App checks RECORD_AUDIO.
-3. If missing, Android's runtime permission prompt appears.
-4. Speech recognition starts only after a grant.
-5. On denial, the app explains that text input remains available.
-6. Speech recognition is destroyed with the Activity lifecycle.
+## AI gateway
+- The Android client requires HTTPS and sends only the user-entered message to POST /v1/chat.
+- The server returns a reply field.
+- Provider API keys and model credentials must exist only on the backend, never in source control or the APK.
+- The backend must authenticate clients, enforce rate limits, validate request size, and define privacy/retention behavior before production use.
 
-## Future device-action policy
-Each action adapter must be explicitly invoked by the user, explain the exact action, request only the required permission at the moment of use, use Android system confirmation/role UI when required, re-check permission immediately before execution, and fail closed on denial, ambiguity, or revocation. The app must never bypass Android sandboxing or platform security controls.
+## Device actions
+The only device action currently implemented is opening Android Settings after an explicit confirmation dialog. It does not change settings. Future actions must each have an allow-list entry, explain the exact operation, request only the required runtime permission, invoke Android system confirmation where required, re-check authorization immediately before execution, and fail closed on denial or ambiguity. The app must not bypass Android security boundaries.
 
-## AI credentials
-- Never commit API keys, refresh tokens, private keys, or production credentials.
-- Never package provider secrets in the APK.
-- Use a server-side gateway with scoped credentials, authentication, rate limits and audit controls.
-- Keep secrets out of logs and crash reports.
+## Voice and data
+No background microphone recording is implemented. Cloud history is not stored by this starter. Before enabling history, define retention, deletion, export, encryption, and provider data processing.
 
-## Data handling
-Cloud conversation history is not enabled. Before enabling it, define data transmitted, purpose, retention/deletion, provider processing, TLS, server access controls, and user-visible export/deletion controls.
-
-## Security tests
-Test permission denied/revoked, unavailable speech service, malformed recognition results, network interruption and gateway authentication failures (future), duplicate action requests (future), and ambiguous action intent (future).
+## Required tests
+- Microphone grant, denial, revocation, and unavailable recognition service.
+- HTTPS required, absent endpoint, network timeout, non-2xx response, malformed JSON.
+- Device Settings action cancelled and confirmed.
+- Future action tests for revoked permissions, ambiguity, duplicate requests, and system-level restrictions.
