@@ -54,6 +54,7 @@ test("upstream output is converted to the mobile reply contract", async () => {
     assert.equal(options.method, "POST");
     const body = JSON.parse(options.body);
     assert.equal(body.store, false);
+    assert.deepEqual(body.tools, [{ type: "web_search" }]);
     return new Response(JSON.stringify({
       output: [{ type: "message", role: "assistant", content: [{ type: "output_text", text: "أهلا بيك" }] }]
     }), { status: 200, headers: { "content-type": "application/json" } });
