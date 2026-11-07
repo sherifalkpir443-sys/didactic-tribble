@@ -8,7 +8,7 @@ Arabic-first native Android assistant with a separate Node.js AI gateway.
 - Basic technical device snapshot with preview and explicit upload consent.
 - List and launch apps that expose Android launcher activities.
 - Import selected text, Markdown, JSON, and XML files through Android's document picker (64 KiB maximum); review and confirm before upload.
-- Open Android Wi-Fi, Bluetooth, sound, display, location, and general Settings pages after confirmation. The user performs setting changes.
+- Open Android Wi-Fi, Bluetooth, sound, display, location, and general Settings pages after confirmation. The user performs setting changes.\n- Keep the latest 20 conversation turns in app-private local storage, review them, and clear the local history.
 - No hidden data collection, background recording, sandbox bypass, or universal phone-control claim.
 
 ## AI gateway
@@ -32,7 +32,7 @@ Android does not let an ordinary app read every file, message, call log, or anot
 ## Remaining before production
 - Deploy backend and configure provider key privately.
 - Add production per-user authentication and distributed rate limiting.
-- Implement encrypted chat history with user deletion/export controls.
+- Add encryption-at-rest and export controls for chat history.
 - Add separately consented PDF/image, contacts/calendar, or media integrations as justified.
 - Replace stylized 3D prototype with licensed realistic character assets and rigging if required.
 - Run physical-device, accessibility, privacy, and security testing; create signed release build.
