@@ -1,28 +1,31 @@
 # NOVA AI — Security and Permissions Model
 
-## Android permissions
-- RECORD_AUDIO is requested only after the user taps the voice input button.
+## Current Android access
+- RECORD_AUDIO is requested only after the user taps voice input.
 - INTERNET is used for the configured HTTPS gateway.
-- No contacts, SMS, call logs, location, camera, accessibility, overlay, or broad file permissions are requested.
+- ACCESS_NETWORK_STATE is used to read the active network transport.
+- Launcher app discovery is limited to activities matching MAIN/LAUNCHER through Android package visibility. It does not enumerate private or all installed packages.
+- File import uses ACTION_OPEN_DOCUMENT. The user selects each file; only text, Markdown, JSON, and XML content is accepted; the read limit is 64 KiB; upload requires a review and confirmation.
+- Device snapshot fields are limited to non-sensitive technical status. The user reviews and approves each upload.
+- Settings shortcuts open Android system pages only after confirmation; the user changes settings manually.
+
+## Explicit exclusions
+NOVA does not attempt to bypass Android sandboxing, read another app's private databases, silently collect all photos/files/messages, scrape notifications, capture keystrokes, or activate accessibility/device-admin privileges as a universal-control workaround. SMS/call-log permissions are restricted by Android/Google Play policy and are not added as general-purpose access.
 
 ## AI gateway
 - The provider API key exists only in the backend hosting environment.
 - Android communicates with the backend over HTTPS.
-- The backend sends Responses API requests with store=false and does not persist conversation text.
+- The backend sends Responses API requests with store=false and does not keep chat history.
 - Request size and message length are limited; upstream calls have a timeout and a basic per-process rate limit.
 - Provider error bodies and secrets are never returned to the app.
 - Optional NOVA_GATEWAY_TOKEN is for controlled staging only. Do not ship a shared production token in a public APK.
 - Production deployment still requires per-user authentication, distributed rate limiting, TLS, secret rotation, and monitoring.
 
-## Device actions
-The only implemented device action is opening Android Settings after a clear confirmation dialog. The app does not change settings automatically. Every future action must have a narrow allow-list entry, explain the exact operation, request only the required permission, use Android system confirmation/role UI where required, re-check permission before execution, and fail closed on denial or ambiguity. Never bypass Android sandbox or platform security.
-
-## Voice and data
-No background microphone recording is implemented. The backend sends store=false and does not keep chat history. Any future history feature requires user-visible retention, deletion, and export controls.
-
 ## Required tests
 - Microphone grant, denial, revocation, and unavailable recognition service.
+- File picker cancellation, unsupported MIME type, unreadable file, empty file, and file-size limit.
+- App list visibility and launch failures on Android 11+.
+- Settings action cancelled and confirmed.
 - HTTPS enforcement, absent endpoint, network timeout, non-2xx response, malformed JSON.
 - Gateway request size and message length, authentication, rate limiting, provider errors, and empty provider output.
-- Settings action cancelled and confirmed.
 - Future device-action tests for revoked permissions, ambiguity, duplicate requests, and platform restrictions.
