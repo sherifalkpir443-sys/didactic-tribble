@@ -136,7 +136,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             }
         }, matchWidth())
         root.addView(TextView(this).apply {
-            text = "التحكم في الجهاز محدود بفتح الإعدادات بعد تأكيدك. باقي أوامر الجهاز مش مفعّلة."
+            text = "تقدر تراجع معلومات الجهاز، تفتح التطبيقات الظاهرة، تختار ملفات نصية للتحليل، وتفتح صفحات الإعدادات بعد تأكيدك. الوصول لباقي البيانات محتاج صلاحيات منفصلة."
             textSize = 11f
             setTextColor(0xFFB7C4D6.toInt())
             setPadding(0, 18, 0, 0)
