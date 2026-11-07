@@ -55,9 +55,9 @@ export function createServer({
       return send(res, 401, { error: "unauthorized" });
     }
 
-    const clientKey = (req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress || "unknown").trim();
+    // Use the socket peer by default; do not trust caller-controlled X-Forwarded-For.\n    const clientKey = req.socket.remoteAddress || "unknown";
     const now = clock();
-    const bucket = buckets.get(clientKey);
+    if (buckets.size > 5_000) {\n      for (const [key, value] of buckets) {\n        if (now - value.start >= WINDOW_MS) buckets.delete(key);\n      }\n    }\n    const bucket = buckets.get(clientKey);
     if (!bucket || now - bucket.start >= WINDOW_MS) {
       buckets.set(clientKey, { start: now, count: 1 });
     } else if (bucket.count >= MAX_REQUESTS_PER_WINDOW) {
