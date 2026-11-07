@@ -5,4 +5,4 @@ COPY package.json ./
 COPY server.mjs ./
 USER node
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD ["node", "server.mjs"]
