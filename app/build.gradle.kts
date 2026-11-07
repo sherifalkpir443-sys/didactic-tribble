@@ -3,7 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-val novaApiBaseUrl = providers.gradleProperty("NOVA_API_BASE_URL").orElse("").get()\nval novaGatewayToken = providers.gradleProperty("NOVA_GATEWAY_TOKEN").orElse("").get()
+val novaApiBaseUrl = providers.gradleProperty("NOVA_API_BASE_URL").orElse("").get()
+val novaGatewayToken = providers.gradleProperty("NOVA_GATEWAY_TOKEN").orElse("").get()
 
 android {
     namespace = "com.nova.ai"
@@ -12,9 +13,10 @@ android {
         applicationId = "com.nova.ai"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
         buildConfigField("String", "NOVA_API_BASE_URL", "\"$novaApiBaseUrl\"")
+        buildConfigField("String", "NOVA_GATEWAY_TOKEN", "\"$novaGatewayToken\"")
     }
     buildFeatures { buildConfig = true }
     compileOptions {
