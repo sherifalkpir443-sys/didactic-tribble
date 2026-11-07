@@ -4,7 +4,7 @@
 - Basic device status snapshot with explicit preview and upload consent.
 - Launchable app list and launch action. Android package visibility limits the results to apps exposing a launcher activity.
 - User-selected text/Markdown/JSON/XML import through the system document picker, limited to 64 KiB and uploaded only after confirmation.
-- Confirmed shortcuts to Wi-Fi, Bluetooth, sound, display, location, and general Android Settings.
+- Confirmed shortcuts to Wi-Fi, Bluetooth, sound, display, location, and general Android Settings.\n- Local conversation history for the latest 20 messages, with a clear-history control.
 
 ## What "all phone data" means on Android
 An ordinary third-party Android app cannot read every item on a phone. Android's sandbox intentionally protects app-private databases and content. A file picker grants access only to the document the user selects. Contacts, calendar, media, location, notifications, and similar data each require their own Android API and permissions or system-mediated access. Some capabilities are restricted to default-handler apps, privileged/system apps, or approved special-use cases. NOVA must not claim universal access or try to evade those protections.
@@ -23,7 +23,7 @@ An ordinary third-party Android app cannot read every item on a phone. Android's
 | Notifications | Not implemented | Optional notification-listener access only with clear special-access explanation |
 | SMS/call logs | Not implemented | Do not add as a general data-reading feature; platform restrictions apply |
 | Device control | Limited to opening system pages and launching apps | Add individual actions through supported Android APIs and confirmation |
-| Chat history | Not implemented | Encrypted local history, export, and delete controls |
+| Chat history | Implemented as local app-private history with clear control | Add encryption-at-rest and export controls |
 | Web search | Not implemented | Add Responses API web search tool and citations |
 | Realistic animated avatar | Prototype only | Licensed rigged model, animation, and lip-sync testing |
 
