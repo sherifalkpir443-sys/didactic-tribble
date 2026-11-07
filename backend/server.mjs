@@ -55,8 +55,11 @@ export function createServer({
       return send(res, 401, { error: "unauthorized" });
     }
 
-    // Use the socket peer by default; do not trust caller-controlled X-Forwarded-For.
-    const clientKey = req.socket.remoteAddress || "unknown";
+    // Trust X-Forwarded-For only when a trusted reverse proxy overwrites it.
+    const forwardedFor = req.headers["x-forwarded-for"];
+    const clientKey = env.TRUST_PROXY === "true" && typeof forwardedFor === "string"
+      ? forwardedFor.split(",")[0].trim()
+      : (req.socket.remoteAddress || "unknown");
     const now = clock();
     if (buckets.size > 5_000) {
       for (const [key, value] of buckets) {
