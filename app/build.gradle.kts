@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-val novaApiBaseUrl = providers.gradleProperty("NOVA_API_BASE_URL").orElse("").get()
+val novaApiBaseUrl = providers.gradleProperty("NOVA_API_BASE_URL").orElse("").get()\nval novaGatewayToken = providers.gradleProperty("NOVA_GATEWAY_TOKEN").orElse("").get()
 
 android {
     namespace = "com.nova.ai"
