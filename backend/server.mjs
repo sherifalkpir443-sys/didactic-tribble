@@ -104,7 +104,8 @@ export function createServer({
           model: env.OPENAI_MODEL || "gpt-6-astra",
           instructions: "أنت NOVA AI، مساعد بيتكلم بالعربي المصري العامي. جاوب بوضوح وباختصار مفيد. لا تدّعي تنفيذ أي إجراء على الهاتف. لا تطلب كلمات مرور أو مفاتيح سرية.",
           input: message,
-          max_output_tokens: 800,
+          tools: [{ type: "web_search" }],
+          max_output_tokens: 1_200,
           store: false
         }),
         signal: AbortSignal.timeout(30_000)
