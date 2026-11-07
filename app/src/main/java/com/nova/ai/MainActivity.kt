@@ -101,6 +101,10 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             setOnClickListener { beginVoiceInput() }
         }, matchWidth())
         root.addView(Button(this).apply {
+            text = "معلومات الهاتف للمساعد"
+            setOnClickListener { shareDeviceContextWithAssistant() }
+        }, matchWidth())
+        root.addView(Button(this).apply {
             text = "قراءة آخر رد"
             setOnClickListener {
                 textToSpeech?.speak(status.text.toString(), TextToSpeech.QUEUE_FLUSH, null, "nova-reply")
@@ -146,6 +150,23 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
                 status.text = reply ?: "تعذر الاتصال بالخادم. راجع عنوان الخدمة والاتصال."
             }
         }
+    }
+
+    private fun shareDeviceContextWithAssistant() {
+        val snapshot = try {
+            DeviceContextProvider.collect(this)
+        } catch (_: Exception) {
+            status.text = "مقدرتش أقرأ معلومات الجهاز دلوقتي."
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("مراجعة معلومات الهاتف")
+            .setMessage("$snapshot\n\nهل توافق على إرسال الملخص ده لخادم NOVA AI عشان يساعدك؟")
+            .setNegativeButton("إلغاء", null)
+            .setPositiveButton("موافق وإرسال") { _, _ ->
+                sendMessage("حلل معلومات جهازي دي، واشرح حالته واقترح خطوات مناسبة من غير ما تغيّر أي إعداد: \n$snapshot")
+            }
+            .show()
     }
 
     private fun beginVoiceInput() {
