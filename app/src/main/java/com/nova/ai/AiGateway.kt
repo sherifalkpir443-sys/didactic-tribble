@@ -26,7 +26,7 @@ object AiGateway {
                     readTimeout = 20_000
                     doOutput = true
                     setRequestProperty("Content-Type", "application/json; charset=utf-8")
-                    setRequestProperty("Accept", "application/json")
+                    setRequestProperty("Accept", "application/json")\n                    if (BuildConfig.NOVA_GATEWAY_TOKEN.isNotBlank()) {\n                        setRequestProperty("Authorization", "Bearer ${BuildConfig.NOVA_GATEWAY_TOKEN}")\n                    }
                 }
                 val payload = JSONObject().put("message", message).toString()
                 connection.outputStream.use { it.write(payload.toByteArray(StandardCharsets.UTF_8)) }
