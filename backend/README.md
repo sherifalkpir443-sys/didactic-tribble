@@ -31,3 +31,4 @@ The service listens on port 8080. Deploy behind a TLS-terminating reverse proxy 
 - The service does not persist conversations or log message content.
 
 Before production: add durable per-user authentication, distributed rate limiting, abuse monitoring without content logging, deployment health monitoring, secret rotation, and privacy/legal review. Set `TRUST_PROXY=true` only when the service is behind a trusted reverse proxy that overwrites `X-Forwarded-For`; otherwise the gateway uses the direct socket peer. The in-memory limiter is per process and is not a substitute for edge protection.
+\n\n## Web search\nThe gateway enables the Responses API `web_search` tool. The model can decide when current information is needed; web-search tool usage may incur separate API charges. Responses can include source citations.\n
