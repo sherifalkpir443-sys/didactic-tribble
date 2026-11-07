@@ -2,6 +2,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
+val novaApiBaseUrl = providers.gradleProperty("NOVA_API_BASE_URL").orElse("").get()
+
 android {
     namespace = "com.nova.ai"
     compileSdk = 35
@@ -11,7 +14,7 @@ android {
         targetSdk = 35
         versionCode = 2
         versionName = "0.2.0"
-        buildConfigField("String", "NOVA_API_BASE_URL", "\"\${project.findProperty("NOVA_API_BASE_URL")?.toString() ?: ""}\"")
+        buildConfigField("String", "NOVA_API_BASE_URL", "\"$novaApiBaseUrl\"")
     }
     buildFeatures { buildConfig = true }
     compileOptions {
