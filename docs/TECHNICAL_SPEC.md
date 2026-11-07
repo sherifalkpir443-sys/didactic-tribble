@@ -1,36 +1,34 @@
 # NOVA AI — Technical Specification
 
-Status: implementation baseline 0.2.0  
+Status: implementation baseline 0.3.0  
 Application ID: com.nova.ai  
 Platform: Android 8.0+ (API 26+)  
 Language: Egyptian Arabic (ar-EG)
 
 ## Implemented
-- Native Kotlin Android application with an Arabic-first interface.
-- Text input and on-demand speech recognition using Android SpeechRecognizer.
-- Arabic text-to-speech using Android TextToSpeech.
-- Microphone permission requested only after a microphone tap.
-- Male/female presentation selector with a simple 2D face preview. This is not the planned realistic 3D avatar.
-- Explicitly confirmed action to open Android Settings. No silent device setting changes are performed.
-- Optional HTTPS AI gateway client. It sends POST /v1/chat with {"message":"..."} and expects {"reply":"..."}.
+- Native Kotlin Android app with Arabic-first UI.
+- Text input, on-demand SpeechRecognizer input, and Arabic (Egypt) TextToSpeech.
+- Microphone permission requested only after explicit user tap.
+- Male/female presentation selector.
+- Procedural stylized 3D face preview rendered with OpenGL ES 2.0; not a photorealistic model, rig, or lip-sync character.
+- User-confirmed shortcut to Android Settings; no setting is changed by the app.
+- HTTPS-only Android client for POST /v1/chat with a {"message":"..."} request and {"reply":"..."} response.
+- Node.js backend implementation using OpenAI Responses API with server-side credentials, store=false, request validation, basic rate limiting, and timeout.
+- CI workflows for Android debug APK build and backend tests.
 
-## AI gateway configuration
-Set Gradle project property NOVA_API_BASE_URL to the HTTPS base URL of a deployed backend. Example local Gradle invocation:
-
-    gradle -PNOVA_API_BASE_URL=https://your-domain.example assembleDebug
-
-The backend must implement POST /v1/chat and return JSON with a non-empty reply field. No provider credentials are stored in the APK or repository. Without a deployed compatible backend URL, the app clearly reports that AI is not connected.
+## Backend configuration
+See backend/README.md. Configure OPENAI_API_KEY and OPENAI_MODEL only in the backend hosting environment. Deploy behind HTTPS, then set Android Gradle property NOVA_API_BASE_URL to the backend origin. Never put provider credentials in the APK or Git.
 
 ## Architecture
 | Layer | Current status |
 |---|---|
 | Android presentation | Native starter UI |
-| Speech input/output | Android APIs connected |
-| AI gateway | HTTPS client connected to a documented contract; backend not deployed |
-| Persona selector | Basic male/female UI state and 2D preview |
-| Realistic 3D avatar | Not implemented; requires selected 3D runtime and model assets |
-| Device actions | Explicit confirmation before opening Android Settings; other actions not enabled |
-| Storage/history | Not implemented |
+| Speech | Android APIs connected |
+| 3D avatar | Procedural OpenGL ES 2.0 prototype; realistic asset/rigging not implemented |
+| AI gateway | Node.js backend source included; deployment and provider secret configuration remain external |
+| Device actions | Confirmed opening of Android Settings only |
+| Chat history | Not implemented |
+| Backend authentication | Optional staging bearer token; production per-user authentication remains required |
 
 ## Build baseline
 - Android Gradle Plugin 8.7.3
@@ -38,14 +36,15 @@ The backend must implement POST /v1/chat and return JSON with a non-empty reply 
 - Gradle 8.9
 - JDK 17
 - compileSdk/targetSdk 35; minSdk 26
+- Backend Node.js 20+
 
-## Security requirements
-- HTTPS only for the AI gateway.
-- No provider API key or private credential in the Android app.
+## Security
+- HTTPS required by Android client.
+- Provider key stored only in backend environment.
+- Backend does not persist conversations and sends store=false to the Responses API.
 - No hidden microphone use or background recording.
-- No device action without a direct user action and any required Android permission/system confirmation.
-- Fail closed when gateway URL is absent or network calls fail.
+- No device action without explicit user interaction and required Android permission/system confirmation.
 - No bypassing Android sandbox or system permission controls.
 
 ## Remaining release requirements
-A deployed backend and provider configuration, a real 3D model/runtime, full action-by-action permission/confirmation design, automated tests, successful CI build, and device installation testing remain outstanding.
+Deploy and secure backend, add production per-user authentication, commission or integrate realistic 3D model assets/rigging, implement any further device actions with consent, add chat history only with privacy controls, and complete device installation/security testing.
