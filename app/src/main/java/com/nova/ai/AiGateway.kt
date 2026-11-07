@@ -7,9 +7,9 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 /**
- * Small HTTPS-only adapter for the NOVA backend contract.
- * POST {baseUrl}/v1/chat with {"message":"..."}; expect {"reply":"..."}.
- * Provider credentials stay on the server and are never shipped in the APK.
+ * HTTPS-only adapter for the NOVA backend contract.
+ * Provider credentials remain on the server and are never shipped in the APK.
+ * NOVA_GATEWAY_TOKEN is for controlled staging only; it is not a production secret store.
  */
 object AiGateway {
     private val executor = Executors.newSingleThreadExecutor()
@@ -23,10 +23,13 @@ object AiGateway {
                 connection = (url.openConnection() as HttpURLConnection).apply {
                     requestMethod = "POST"
                     connectTimeout = 12_000
-                    readTimeout = 20_000
+                    readTimeout = 35_000
                     doOutput = true
                     setRequestProperty("Content-Type", "application/json; charset=utf-8")
-                    setRequestProperty("Accept", "application/json")\n                    if (BuildConfig.NOVA_GATEWAY_TOKEN.isNotBlank()) {\n                        setRequestProperty("Authorization", "Bearer ${BuildConfig.NOVA_GATEWAY_TOKEN}")\n                    }
+                    setRequestProperty("Accept", "application/json")
+                    if (BuildConfig.NOVA_GATEWAY_TOKEN.isNotBlank()) {
+                        setRequestProperty("Authorization", "Bearer ${BuildConfig.NOVA_GATEWAY_TOKEN}")
+                    }
                 }
                 val payload = JSONObject().put("message", message).toString()
                 connection.outputStream.use { it.write(payload.toByteArray(StandardCharsets.UTF_8)) }
