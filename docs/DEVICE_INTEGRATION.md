@@ -1,37 +1,39 @@
-# Device awareness and ChatGPT-style capability plan
+# Device awareness and integration plan
 
-## Implemented in this revision
-- On-device snapshot: manufacturer/model, Android/API version, battery/charging state, storage, RAM, active network transport, logical display size, locale, and time zone.
-- The snapshot is generated locally only after the user taps the device-information action.
-- A review dialog displays the exact snapshot. It is sent to the NOVA backend only after the user presses **Agree and send**.
-- Network-state access uses the narrow `ACCESS_NETWORK_STATE` permission.
-- No contacts, SMS, call logs, photos, documents, precise location, microphone recordings, or broad installed-app inventory are collected by the device snapshot.
+## Implemented
+- Basic device status snapshot with explicit preview and upload consent.
+- Launchable app list and launch action. Android package visibility limits the results to apps exposing a launcher activity.
+- User-selected text/Markdown/JSON/XML import through the system document picker, limited to 64 KiB and uploaded only after confirmation.
+- Confirmed shortcuts to Wi-Fi, Bluetooth, sound, display, location, and general Android Settings.
 
-## Android access boundaries
-Android does not provide an ordinary app with unrestricted access to everything on a phone. Each integration must use the supported Android API, declare the narrowest permission, explain the purpose, and obtain runtime consent where required. Some actions must open the relevant system screen for the user to complete. Accessibility, notification access, default-SMS, device-admin, and all-files access are special/high-impact access paths and must never be silently enabled or used as a general surveillance shortcut.
+## What "all phone data" means on Android
+An ordinary third-party Android app cannot read every item on a phone. Android's sandbox intentionally protects app-private databases and content. A file picker grants access only to the document the user selects. Contacts, calendar, media, location, notifications, and similar data each require their own Android API and permissions or system-mediated access. Some capabilities are restricted to default-handler apps, privileged/system apps, or approved special-use cases. NOVA must not claim universal access or try to evade those protections.
 
 ## Capability matrix
-| Capability | Current state | Safe completion requirement |
+| Capability | Current state | Next safe implementation |
 |---|---|---|
-| Text chat | UI and HTTPS gateway scaffold exist | Deploy backend and configure URL/key |
-| Arabic voice input | Android SpeechRecognizer | Device speech service and microphone permission |
-| Spoken replies | Android TextToSpeech | Verify Arabic voice availability on target device |
-| Basic device awareness | Implemented in this revision | User reviews and approves each upload |
-| Device settings | Opens Android Settings after confirmation | User changes settings manually |
-| Conversation history | Not implemented | Encrypted/local retention controls and delete action |
-| Image/file understanding | Not implemented | File picker, content URI handling, upload consent, server-side limits |
-| Web search | Not implemented | Search provider integration and citations |
-| Reminders/calendar | Not implemented | Calendar/notification permissions and explicit scheduling confirmation |
-| Contacts/calls/messages | Not implemented | Separate narrowly scoped integrations and explicit per-action consent |
-| Device actions | Not implemented beyond opening Settings | One Android API per action, preview, confirmation, and audit trail |
-| Realistic animated avatar | Prototype only | Licensed rigged model, animation, performance and lip-sync testing |
+| Text chat | UI and HTTPS gateway source | Deploy backend and configure URL/key |
+| Arabic voice input/output | Android speech APIs | Verify target-device voice service |
+| Basic device awareness | Implemented | Add optional diagnostic fields only when justified |
+| Launch apps | Implemented for visible launcher activities | Optional favorites and recent-app shortcuts |
+| Settings navigation | Implemented with confirmation | User makes the actual setting change |
+| Selected text files | Implemented, max 64 KiB | PDF and image understanding through a separate consented upload flow |
+| Contacts/calendar | Not implemented | Dedicated permission flow and user-visible scope |
+| Photos/media | Not implemented | Android Photo Picker; no broad storage permission |
+| Notifications | Not implemented | Optional notification-listener access only with clear special-access explanation |
+| SMS/call logs | Not implemented | Do not add as a general data-reading feature; platform restrictions apply |
+| Device control | Limited to opening system pages and launching apps | Add individual actions through supported Android APIs and confirmation |
+| Chat history | Not implemented | Encrypted local history, export, and delete controls |
+| Web search | Not implemented | Add Responses API web search tool and citations |
+| Realistic animated avatar | Prototype only | Licensed rigged model, animation, and lip-sync testing |
 
 ## Release gates
-1. Configure a production HTTPS backend and store provider credentials only in hosting secrets.
-2. Set `NOVA_API_BASE_URL` for the Android release build; never ship provider API keys in the APK.
-3. Run Android and backend CI on the exact release commit.
-4. Test install, voice input/output, network failure, permission denial, offline behavior, and rotation/lifecycle on physical Android devices.
-5. Produce a signed release APK/AAB using a private signing key that is not committed to Git.
-6. Verify privacy disclosures, data retention, and Play policy compliance before distribution.
+1. Deploy the backend on HTTPS and store provider credentials only in hosting secrets.
+2. Configure NOVA_API_BASE_URL for the Android release build.
+3. Add production per-user authentication and abuse controls.
+4. Run Android build/tests and backend tests on the exact release commit.
+5. Test on physical devices, including permission denial, offline state, low storage, and file-picker edge cases.
+6. Produce a signed release APK/AAB with a private signing key never committed to Git.
+7. Complete privacy disclosures, data-retention policy, and store-policy review.
 
-A successful CI build is necessary but does not prove real-device behavior or a live AI connection.
+A successful CI build does not prove physical-device behavior or a live AI connection.
