@@ -1,40 +1,35 @@
 # NOVA AI — Roadmap
 
-## Phase 0 — Starter baseline
-- [x] Native Android project skeleton
-- [x] Arabic text interface
-- [x] On-demand microphone permission
-- [x] Arabic text-to-speech
-- [x] Technical and security documentation
+## Phase 0 — Android starter
+- [x] Native Android project and Gradle configuration
+- [x] Arabic text UI and local voice APIs
+- [x] Microphone permission requested on demand
+- [x] Basic persona selector and 2D face preview
+- [x] Confirmed shortcut to Android Settings
 
-## Phase 1 — Conversation foundation
-- [ ] Message data model and chat history UI
-- [ ] Local preferences and persona selection
-- [ ] Conversation state and error handling
-- [ ] Unit tests
+## Phase 1 — AI service
+- [x] Define HTTPS backend request/response contract
+- [x] Add Android gateway client without embedding provider secrets
+- [ ] Deploy backend service and connect a selected model provider
+- [ ] Add authentication, rate limits, privacy/retention controls
+- [ ] Test streaming, cancellation, offline and error paths
 
-## Phase 2 — Secure AI connection
-- [ ] Select provider and define backend gateway contract
-- [ ] Server-side credential storage and authentication
-- [ ] Streaming responses and cancellation
-- [ ] Privacy notice, retention and deletion controls
+## Phase 2 — Avatar
+- [ ] Select and integrate a supported 3D runtime
+- [ ] Add licensed realistic male/female avatar model assets
+- [ ] Implement animation, lip-sync and voice synchronization
+- [ ] Test performance on target Android devices
 
-## Phase 3 — Avatar and voice profiles
-- [ ] Select a maintainable 3D avatar runtime
-- [ ] Male/female presentation profiles
-- [ ] Lip-sync and expressive animation
-- [ ] User-controlled voice selection
+## Phase 3 — Safe device actions
+- [x] Open Android Settings only after a confirmation dialog
+- [ ] Define a narrow allow-list for each requested action
+- [ ] Add action-specific Android permissions/system confirmations
+- [ ] Add clear action previews and user-visible action history
+- [ ] Test denial, revocation, ambiguity and cancellation
 
-## Phase 4 — Explicit device actions
-- [ ] Narrow action allow-list
-- [ ] Per-action permission checks
-- [ ] Clear previews and confirmation prompts
-- [ ] User-visible action history
-- [ ] Permission denial/revocation and ambiguity tests
-
-## Phase 5 — Release readiness
-- [ ] CI build and automated tests
-- [ ] Accessibility and localization review
-- [ ] Device compatibility testing
-- [ ] Signed release configuration with secrets outside Git
-- [ ] APK/AAB build and install verification
+## Phase 4 — Release readiness
+- [ ] Unit/instrumentation tests
+- [ ] CI build passes and APK artifact is uploaded
+- [ ] Install and test on physical devices
+- [ ] Accessibility/localization review
+- [ ] Signed release build and release documentation
