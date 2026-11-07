@@ -164,7 +164,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             .setMessage("$snapshot\n\nهل توافق على إرسال الملخص ده لخادم NOVA AI عشان يساعدك؟")
             .setNegativeButton("إلغاء", null)
             .setPositiveButton("موافق وإرسال") { _, _ ->
-                sendMessage("حلل معلومات جهازي دي، واشرح حالته واقترح خطوات مناسبة من غير ما تغيّر أي إعداد: \n$snapshot")
+                sendMessage("حلل معلومات جهازي دي، واشرح حالته واقترح خطوات مناسبة من غير ما تغيّر أي إعداد:\n$snapshot")
             }
             .show()
     }
