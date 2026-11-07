@@ -1,7 +1,7 @@
 import http from "node:http";
 import { pathToFileURL } from "node:url";
 
-const MAX_BODY_BYTES = 64 * 1024;
+const MAX_BODY_BYTES = 256 * 1024;
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 20;
 
@@ -90,7 +90,7 @@ export function createServer({
       }
       const body = JSON.parse(raw || "{}");
       const message = typeof body.message === "string" ? body.message.trim() : "";
-      if (!message || message.length > 8_000) {
+      if (!message || message.length > 80_000) {
         return send(res, 400, { error: "message_required_or_too_long" });
       }
 
