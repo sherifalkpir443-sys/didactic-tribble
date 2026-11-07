@@ -5,7 +5,7 @@
 - INTERNET is used for the configured HTTPS gateway.
 - ACCESS_NETWORK_STATE is used to read the active network transport.
 - Launcher app discovery is limited to activities matching MAIN/LAUNCHER through Android package visibility. It does not enumerate private or all installed packages.
-- File import uses ACTION_OPEN_DOCUMENT. The user selects each file; only text, Markdown, JSON, and XML content is accepted; the read limit is 64 KiB; upload requires a review and confirmation.
+- Conversation history is stored in app-private SharedPreferences, capped to the latest 20 messages, and can be cleared by the user. The recent transcript is sent to the AI gateway only as context when a new message is sent.\n- File import uses ACTION_OPEN_DOCUMENT. The user selects each file; only text, Markdown, JSON, and XML content is accepted; the read limit is 64 KiB; upload requires a review and confirmation.
 - Device snapshot fields are limited to non-sensitive technical status. The user reviews and approves each upload.
 - Settings shortcuts open Android system pages only after confirmation; the user changes settings manually.
 
