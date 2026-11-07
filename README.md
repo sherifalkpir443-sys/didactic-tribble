@@ -13,7 +13,7 @@ Arabic-first native Android assistant with a separate Node.js AI gateway.
 
 ## AI gateway
 POST /v1/chat accepts { "message": "..." } and returns { "reply": "..." }.
-The Node.js gateway uses the OpenAI Responses API. Provider credentials remain in the server environment. The default model is gpt-6-astra; configure OPENAI_MODEL for a model enabled on your API project. The gateway uses store=false, input limits, basic per-process rate limiting, and an upstream timeout.
+The Node.js gateway uses the OpenAI Responses API. Provider credentials remain in the server environment. The default model is gpt-6-astra; configure OPENAI_MODEL for a model enabled on your API project. The gateway enables the Responses API web_search tool for current information; the model decides when to search. It uses store=false, input limits, basic per-process rate limiting, and an upstream timeout.
 
 Deploy the backend behind HTTPS, then build Android with:
 
