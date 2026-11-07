@@ -18,7 +18,7 @@ Language: Egyptian Arabic (ar-EG)
 - Local conversation history for the latest 20 turns, with a review screen and a user-triggered clear action. Recent turns are sent as context only when the user sends a new message.
 - Confirmed shortcuts to Android Wi-Fi, Bluetooth, sound, display, location, and general Settings pages. NOVA opens the relevant system page; the user performs the change.
 - HTTPS-only Android client for POST /v1/chat with a { "message": "..." } request and { "reply": "..." } response.
-- Node.js backend implementation using OpenAI Responses API with server-side credentials, store=false, request validation, basic rate limiting, and timeout.
+- Node.js backend implementation using OpenAI Responses API with server-side credentials, optional model-driven web search, store=false, request validation, basic rate limiting, and timeout.
 - CI workflows for Android debug APK build and backend tests.
 
 ## Android access boundaries
