@@ -12,6 +12,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -46,7 +47,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
             setBackgroundColor(0xFF101827.toInt())
         }
         root.addView(TextView(this).apply {
-            text = "NOVA AI"
+            text = "MEMORI AI"
             textSize = 30f
             setTextColor(0xFF70D6FF.toInt())
             gravity = Gravity.CENTER
@@ -167,7 +168,11 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
         status.text = "ببعت رسالتك وسياق المحادثة للخادم..."
         AiGateway.send(baseUrl, conversation) { reply ->
             runOnUiThread {
-                if (reply != null) ChatHistoryStore.add(this, "assistant", reply)
+                if (reply != null) {
+                    ChatHistoryStore.add(this, "assistant", reply)
+                    avatar.setSpeaking(true)
+                    textToSpeech?.speak(reply, TextToSpeech.QUEUE_FLUSH, null, "memori-reply")
+                }
                 status.text = reply ?: "تعذر الاتصال بالخادم. راجع عنوان الخدمة والاتصال."
             }
         }
@@ -182,7 +187,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
         }
         AlertDialog.Builder(this)
             .setTitle("مراجعة معلومات الهاتف")
-            .setMessage("$snapshot\n\nهل توافق على إرسال الملخص ده لخادم NOVA AI عشان يساعدك؟")
+            .setMessage("$snapshot\n\nهل توافق على إرسال الملخص ده لخادم MEMORI AI عشان يساعدك؟")
             .setNegativeButton("إلغاء", null)
             .setPositiveButton("موافق وإرسال") { _, _ ->
                 sendMessage("حلل معلومات جهازي دي، واشرح حالته واقترح خطوات مناسبة من غير ما تغيّر أي إعداد:\n$snapshot")
@@ -241,7 +246,7 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
                 val (label, action) = actions[index]
                 AlertDialog.Builder(this)
                     .setTitle("تأكيد فتح $label")
-                    .setMessage("NOVA هيفتح صفحة إعدادات أندرويد. التغيير نفسه هتعمله إنت.")
+                    .setMessage("MEMORI هيفتح صفحة إعدادات أندرويد. التغيير نفسه هتعمله إنت.")
                     .setNegativeButton("إلغاء", null)
                     .setPositiveButton("فتح") { _, _ ->
                         try {
@@ -360,7 +365,21 @@ class MainActivity : Activity(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(statusCode: Int) {
-        if (statusCode == TextToSpeech.SUCCESS) textToSpeech?.language = Locale("ar", "EG")
+        if (statusCode == TextToSpeech.SUCCESS) {
+            textToSpeech?.language = Locale("ar", "EG")
+            textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) {
+                    runOnUiThread { if (::avatar.isInitialized) avatar.setSpeaking(true) }
+                }
+                override fun onDone(utteranceId: String?) {
+                    runOnUiThread { if (::avatar.isInitialized) avatar.setSpeaking(false) }
+                }
+                @Deprecated("Deprecated by Android")
+                override fun onError(utteranceId: String?) {
+                    runOnUiThread { if (::avatar.isInitialized) avatar.setSpeaking(false) }
+                }
+            })
+        }
     }
 
     override fun onResume() {
