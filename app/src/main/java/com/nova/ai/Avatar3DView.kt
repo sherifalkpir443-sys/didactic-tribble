@@ -31,12 +31,19 @@ class Avatar3DView(context: Context) : GLSurfaceView(context) {
         requestRender()
     }
 
+    fun setSpeaking(speaking: Boolean) {
+        avatarRenderer.setSpeaking(speaking)
+        renderMode = if (speaking) RENDERMODE_CONTINUOUSLY else RENDERMODE_WHEN_DIRTY
+        requestRender()
+    }
+
     override fun onPause() {
         super.onPause()
     }
 
     private class AvatarRenderer : Renderer {
         @Volatile private var female = false
+        @Volatile private var speaking = false
         private val projection = FloatArray(16)
         private val view = FloatArray(16)
         private val viewProjection = FloatArray(16)
@@ -51,6 +58,7 @@ class Avatar3DView(context: Context) : GLSurfaceView(context) {
         private val sphere = SphereMesh()
 
         fun setPersona(value: String) { female = value == "أنثى" }
+        fun setSpeaking(value: Boolean) { speaking = value }
 
         override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
             val vertexShader = """
@@ -111,7 +119,9 @@ class Avatar3DView(context: Context) : GLSurfaceView(context) {
             draw(-0.27f, 0.16f, 0.535f, 0.075f, 0.085f, 0.045f, eye)
             draw(0.27f, 0.16f, 0.535f, 0.075f, 0.085f, 0.045f, eye)
             draw(0f, -0.06f, 0.57f, 0.09f, 0.18f, 0.10f, shadow)
-            draw(0f, -0.48f, 0.535f, 0.19f, 0.045f, 0.035f, shadow)
+            val mouthPulse = if (speaking) (0.5 + 0.5 * sin(System.nanoTime() / 145_000_000.0)).toFloat() else 0f
+            val mouthHeight = if (speaking) 0.045f + mouthPulse * 0.105f else 0.045f
+            draw(0f, -0.48f, 0.535f, 0.19f, mouthHeight, 0.035f, shadow)
             if (!female) {
                 draw(0f, -0.61f, 0.39f, 0.54f, 0.27f, 0.25f, hair)
             }
