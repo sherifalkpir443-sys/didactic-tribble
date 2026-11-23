@@ -52,7 +52,7 @@ object ChatHistoryStore {
         val output = StringBuilder()
         for (i in 0 until items.length()) {
             val item = items.optJSONObject(i) ?: continue
-            val role = if (item.optString("role") == "assistant") "NOVA" else "إنت"
+            val role = if (item.optString("role") == "assistant") "MEMORI" else "إنت"
             output.append(role).append(": ")
                 .append(item.optString("text").take(240))
                 .append("\n\n")
