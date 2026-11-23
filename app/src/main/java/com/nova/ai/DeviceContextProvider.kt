@@ -69,7 +69,7 @@ object DeviceContextProvider {
             appendLine("- أبعاد الشاشة المنطقية: ${widthDp}×${heightDp} dp")
             appendLine("- اللغة: ${Locale.getDefault().toLanguageTag()}")
             appendLine("- المنطقة الزمنية: ${TimeZone.getDefault().id}")
-            appendLine("- اسم التطبيق: NOVA AI")
+            appendLine("- اسم التطبيق: MEMORI AI")
             append("ملاحظة: ده ملخص تقني محدود، مش فحص لكل محتويات الهاتف.")
         }
     }
