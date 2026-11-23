@@ -13,7 +13,7 @@
     </queries>
     <application
         android:allowBackup="false"
-        android:label="NOVA AI"
+        android:label="MEMORI AI"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
         android:theme="@android:style/Theme.Material.NoActionBar">
